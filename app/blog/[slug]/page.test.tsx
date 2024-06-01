@@ -1,11 +1,19 @@
-/**
- * @jest-environment jsdom
- */
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Page from "./page";
+import Page, { generateMetadata } from './page';
+import React from 'react';
+import { render } from '@testing-library/react';
 
-it("App Router: Works with dynamic route segments", () => {
-  render(<Page params={{ slug: "Test" }} />);
-  expect(screen.getByRole("heading")).toHaveTextContent("Slug: Test");
+describe('generateMetadata function', () => {
+  it('should generate metadata with the correct title', async () => {
+    const params = { slug: 'test-slug' };
+    const metadata = await generateMetadata({ params });
+    expect(metadata.title).toBe('Post: test-slug');
+  });
+});
+
+describe('Page component', () => {
+  it('should render the slug correctly', () => {
+    const params = { slug: 'test-slug' };
+    const { getByText } = render(<Page params={params} />);
+    expect(getByText(`Slug: ${params.slug}`)).toBeInTheDocument();
+  });
 });
